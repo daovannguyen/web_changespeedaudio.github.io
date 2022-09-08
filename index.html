@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+    <style>
+        .bodyPage{
+            width: 60%;
+            margin: auto;
+        }
+        button{
+            width: 70px;
+            height: 50px;
+            background-color: aquamarine;
+            border-radius: 20px;
+            margin-left: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bodyPage">
+        <div><label for="audio-upload">Upload an audio file:</label></div><br><br><br>
+        <div><input id="audio-upload" type="file" /></div>
+        <br>
+        <input id="speedValue" value="3.0"><br><br><br>
+        <span>Speed:</span><br>
+        <button onclick="downSpeed()">⇦</button><span></span> 
+        <button onclick="upSpeed()">⇨</button><br><br><br>
+
+
+        <span>Position:</span><br>
+        <button onclick="downPosition()">⇦</button><span></span> 
+        <button onclick="upPosition()">⇨</button><br><br><br>
+    </div>
+
+
+
+
+
+
+    <script>
+            function getSpeed(){
+                return parseFloat(document.getElementById('speedValue').value);
+            }
+            function changeHandler({
+            target
+            }) {
+            // Make sure we have files to use
+            if (!target.files.length) return;
+            try {
+                a = document.getElementsByTagName('audio')[0];
+                a.remove();
+            }
+            catch(err) {
+                console.log('hrl');
+            };
+            // Create a blob that we can use as an src for our audio element
+            const urlObj = URL.createObjectURL(target.files[0]);
+
+            // Create an audio element
+            const audio = document.createElement("audio");
+
+            // Clean up the URL Object after we are done with it
+            audio.addEventListener("load", () => {
+                URL.revokeObjectURL(urlObj);
+            });
+
+            // Append the audio element
+            document.body.appendChild(audio);
+
+            // Allow us to control the audio
+            audio.controls = "true";
+
+            // Set the src and start loading the audio from the file
+            audio.src = urlObj;
+            audio.playbackRate = getSpeed();
+            }
+
+            document
+            .getElementById("audio-upload")
+            .addEventListener("change", changeHandler);
+
+
+
+            function changeSpeed(speed){
+                var old_speed = parseFloat(document.getElementById('speedValue').value);
+                var new_speed = old_speed + speed;
+                document.getElementById('speedValue').value = new_speed;
+                a = document.getElementsByTagName('audio')[0];
+                a.playbackRate = new_speed;//parseFloat(document.getElementById('speedValue').value);
+            }
+            function upSpeed(){
+                changeSpeed(0.2);
+            }
+            function downSpeed(){
+                changeSpeed(-0.2);
+            }
+
+            function changePosition(speed){
+                var old_speed = parseFloat(document.getElementById('speedValue').value);
+                a = document.getElementsByTagName('audio')[0];
+                var tam = a.currentTime;
+                a.currentTime = tam + speed * old_speed * 60;
+            }
+            function upPosition(){
+                changePosition(1);
+            }
+            function downPosition(){
+                changePosition(-1);
+            }
+    </script>
+
+</body>
+</html>
